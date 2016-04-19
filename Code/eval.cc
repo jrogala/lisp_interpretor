@@ -2,6 +2,7 @@
 #include <string>
 #include <cassert>
 #include "eval.hh"
+#include "object.hh"
 
 using namespace std;
 
@@ -97,21 +98,36 @@ Object do_plus(Object lvals) {
   return number_to_Object(a + b);
 }
 
+Object do_minus(Object lvals) {
+  int a = Object_to_number(car(lvals));
+  int b = Object_to_number(cadr(lvals));
+  return number_to_Object(a - b);
+}
+
 Object do_times(Object lvals) {
   int a = Object_to_number(car(lvals));
   int b = Object_to_number(cadr(lvals));
   return number_to_Object(a * b);
 }
 
+Object do_division(Object lvals) {
+  int a = Object_to_number(car(lvals));
+  int b = Object_to_number(cadr(lvals));
+  return number_to_Object(a / b);
+}
+
+
 Object apply(Object f, Object lvals, Environment env) {
   clog << "\tapply: " << f << " " << lvals << env << endl;
 
   if (null(f)) throw Evaluation_Exception(f, env, "Cannot apply nil");
   if (numberp(f)) throw Evaluation_Exception(f, env, "Cannot apply a number");
-  if (stringp(f)) throw Evaluation_Exception(f, env, "Cannot apply a string");
+  if (stringp(f))  throw Evaluation_Exception(f, env, "Cannot apply a string");
   if (symbolp(f)) {
     if (Object_to_string(f) == "+") return do_plus(lvals);
+    if (Object_to_string(f) == "-") return do_minus(lvals);
     if (Object_to_string(f) == "*") return do_times(lvals);
+    if (Object_to_string(f) == "/") return do_division(lvals);
     Object new_f = env.find_value(Object_to_string(f));
     return apply(new_f, lvals, env);
   }
