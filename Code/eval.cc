@@ -80,6 +80,7 @@ Object eval(Object l, Environment env) {
       if (null(test_value)) return eval(else_part, env);
       return eval(then_part, env);
     }
+    if (Object_to_string(f) == "lambda") return l;
   }
   // It is a function applied to arguments
   Object vals = eval_list(cdr(l), env);
