@@ -3,6 +3,8 @@
 #include "read.hh"
 #include "object.hh"
 #include <stdio.h>
+#include <string>
+#include <stdexcept>
 
 
 extern "C" FILE *yyin;
@@ -20,6 +22,7 @@ bool is_setq(Object l){
 
 void toplevel(){
   Environment env;
+  Object meval;
   do {
     Object l = read_obj();
     try {is_setq(l);}
@@ -34,6 +37,10 @@ void toplevel(){
 				  continue;break;
 				}
     }
-    cout << eval(l,env) << endl;
+	try {meval = eval(l,env);}
+	catch (runtime_error e){
+		continue;
+		}
+    cout << meval<< endl;
     } while (!feof(yyin));
 }
