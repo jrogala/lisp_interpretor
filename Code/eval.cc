@@ -142,6 +142,9 @@ Object apply(Object f, Object lvals, Environment env) {
     if (Object_to_string(f) == "*") return do_times(lvals);
     if (Object_to_string(f) == "/") return do_division(lvals);
     if (Object_to_string(f) == "=") return test_equal(lvals);
+    if (Object_to_string(f) == "car") return car(lvals);
+    if (Object_to_string(f) == "cdr") return cdr(lvals);
+    if (Object_to_string(f) == "quote") return lvals;
     if (Object_to_string(f) == "cond") {
       Object clause;
       Object condition;
