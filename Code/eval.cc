@@ -81,6 +81,7 @@ Object eval(Object l, Environment env) {
       return eval(then_part, env);
     }
     if (Object_to_string(f) == "lambda") return l;
+    if (Object_to_string(f) == "cond") return apply(f, cdr(l), env);
   }
   // It is a function applied to arguments
   Object vals = eval_list(cdr(l), env);
@@ -117,6 +118,17 @@ Object do_division(Object lvals) {
   return number_to_Object(a / b);
 }
 
+Object test_equal (Object lvals) {
+  int a = Object_to_number(car(lvals));
+  int b = Object_to_number(cadr(lvals));
+  if (a == b) {
+    return (symbol_to_Object("t"));
+  }
+  else {
+    return(nil());
+  }
+}
+
 
 Object apply(Object f, Object lvals, Environment env) {
   clog << "\tapply: " << f << " " << lvals << env << endl;
@@ -129,6 +141,23 @@ Object apply(Object f, Object lvals, Environment env) {
     if (Object_to_string(f) == "-") return do_minus(lvals);
     if (Object_to_string(f) == "*") return do_times(lvals);
     if (Object_to_string(f) == "/") return do_division(lvals);
+    if (Object_to_string(f) == "=") return test_equal(lvals);
+    if (Object_to_string(f) == "cond") {
+      Object clause;
+      Object condition;
+      Object result;
+      int b = 1;
+      do {
+        clause = car(lvals);
+        condition = car(clause);
+        b = !null(eval(condition, env));
+        if (b) {
+          result = eval(cadr(clause), env);
+        }
+      }
+      while(!b);
+      return result;
+    }
     Object new_f = env.find_value(Object_to_string(f));
     return apply(new_f, lvals, env);
   }
