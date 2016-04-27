@@ -155,6 +155,7 @@ Object apply(Object f, Object lvals, Environment env) {
         if (b) {
           result = eval(cadr(clause), env);
         }
+        lvals = cdr (lvals);
       }
       while(!b);
       return result;
